@@ -1,0 +1,12 @@
+.error-message {
+  display: none;
+  color: red;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14.52px;
+  text-align: left;
+}
+
+.error-active {
+  display: block;
+}

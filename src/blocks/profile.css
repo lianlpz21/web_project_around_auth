@@ -1,0 +1,143 @@
+.profile {
+  padding-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile__avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile__avatar {
+  width: 150px; /* Ajusta según tu diseño */
+  height: 150px; /* Ajusta según tu diseño */
+  border-radius: 50%;
+  overflow: hidden;
+  background-position: center;
+  background-size: cover;
+}
+
+.profile__avatar-edit-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px; /* Ajusta según tu diseño */
+  height: 40px; /* Ajusta según tu diseño */
+  background: rgba(0, 0, 0, 0.6); /* Fondo semitransparente oscuro */
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none; /* Oculto por defecto */
+  background: url("../images/editAvatar.svg") no-repeat center;
+  background-size: 20px; /* Ajusta el tamaño del icono */
+}
+
+.profile__avatar-container:hover .profile__avatar-edit-btn {
+  display: block; /* Muestra al pasar el ratón */
+  background-color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
+}
+
+.profile__avatar {
+  max-width: 120px;
+  max-height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profile__info {
+  max-width: 414px;
+}
+
+.profile__name {
+  font-size: 42px;
+  font-weight: 500;
+  line-height: 56px;
+  margin: 0 0 16px 0;
+}
+
+.profile__edit-btn,
+.profile__name {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.profile__occupation {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 21.78px;
+  margin: 0;
+}
+
+.profile__edit-btn {
+  background-image: url("../images/edit_button.svg");
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  border: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0 0 16px 17px;
+}
+
+.profile__edit-btn:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.profile__add-btn {
+  background-image: url("../images/add_button.png");
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  width: 150px;
+  height: 50px;
+}
+
+.profile__add-btn:hover {
+  cursor: pointer;
+  opacity: 60%;
+}
+
+@media screen and (max-width: 900px) {
+  .profile {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .profile__occupation {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .profile__name {
+    text-align: center;
+  }
+  .profile__occupation {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 597px) {
+  .profile__add-btn {
+    max-width: 288px;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 410px) {
+  .profile__name {
+    display: block;
+  }
+  .profile__edit-btn {
+    margin: 0 0 16px 0;
+    width: 100%;
+  }
+}

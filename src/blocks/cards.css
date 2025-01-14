@@ -1,0 +1,124 @@
+.cards {
+  padding-top: 50px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.card {
+  max-width: 282px;
+  height: 361px;
+  background-color: white;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.card__image {
+  width: 282px;
+  height: 282px;
+  border-radius: 10px 10px 0 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.card__image:hover {
+  cursor: pointer;
+}
+
+.card__image-bigger {
+  position: fixed;
+  z-index: 999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 816px;
+  height: 540px;
+}
+
+.card__delete-button {
+  background-image: url("../images/Trash.svg");
+  width: 18px;
+  height: 20px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  position: absolute;
+  top: 18px;
+  right: 15px;
+}
+
+.card__delete-button_visible {
+  display: block;
+}
+
+.card__delete-button_hidden {
+  display: none;
+}
+
+.card__delete-button:hover {
+  cursor: pointer;
+  opacity: 60%;
+}
+
+.card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-grow: 1;
+  padding: 0 30px;
+}
+
+.card__title {
+  color: black;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 29.05px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0;
+}
+
+.card__like {
+  background-image: url("../images/like.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
+  min-width: 30px;
+  width: 30px;
+  height: 19px;
+  position: relative;
+}
+
+.card__like:hover {
+  cursor: pointer;
+  opacity: 50%;
+}
+
+.card__like_active {
+  background-image: url("../images/liked.svg");
+}
+
+.card__like-counter {
+  color: black;
+  position: absolute;
+  right: 20px;
+}
+@media screen and (max-width: 900px) {
+  .cards {
+    justify-content: center;
+  }
+}
+
+.modal__image {
+  width: 200px;
+}
