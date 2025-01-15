@@ -9,7 +9,17 @@ import api from "./utils/api";
 import CurrentUserContext from "./contexts/CurrentUserContext";
 import EditAvatarPopup from "./components/EditAvatarPopup";
 
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado para autenticación
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -19,29 +29,44 @@ function App() {
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    async function fetchUserInfo() {
-      try {
-        const userInfo = await api.getUserInfo();
-        setCurrentUser(userInfo);
-      } catch (error) {
-        console.log("Error al obtener la información del usuario", error);
+    if (isAuthenticated) {
+      async function fetchUserInfo() {
+        try {
+          const userInfo = await api.getUserInfo();
+          setCurrentUser(userInfo);
+        } catch (error) {
+          console.log("Error al obtener la información del usuario", error);
+        }
       }
+      fetchUserInfo();
     }
-    fetchUserInfo();
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    async function fetchCards() {
-      try {
-        const cardList = await api.getInitialCards();
-        setCards(cardList);
-      } catch (error) {
-        console.log("Error al obtener las tarjetas", error);
+    if (isAuthenticated) {
+      async function fetchCards() {
+        try {
+          const cardList = await api.getInitialCards();
+          setCards(cardList);
+        } catch (error) {
+          console.log("Error al obtener las tarjetas", error);
+        }
       }
+      fetchCards();
     }
-    fetchCards();
-  }, []);
+  }, [isAuthenticated]);
 
+  function handleLoginSuccess() {
+    setIsAuthenticated(true);
+  }
+
+  function handleLogout() {
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+    setCards([]);
+  }
+
+  // Manejo de popups y cambios en el perfil y avatar
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
   }
@@ -121,15 +146,39 @@ function App() {
       <div className="page">
         <Header />
         <CurrentUserContext.Provider value={currentUser}>
-          <Main
-            onEditProfileClick={handleEditProfileClick}
-            onAddPlaceClick={handleAddPlaceClick}
-            onEditAvatarClick={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            cards={cards}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
-          />
+          <Routes>
+            {/* Ruta para el login */}
+            <Route
+              path="/signin"
+              element={<Login onLoginSuccess={handleLoginSuccess} />}
+            />
+
+            {/* Ruta para el registro */}
+            <Route path="/signup" element={<Signup />} />
+
+            {/* Ruta principal protegida */}
+            <Route
+              path="/"
+              element={
+                isAuthenticated ? (
+                  <Main
+                    onEditProfileClick={handleEditProfileClick}
+                    onAddPlaceClick={handleAddPlaceClick}
+                    onEditAvatarClick={handleEditAvatarClick}
+                    onCardClick={handleCardClick}
+                    cards={cards}
+                    onCardLike={handleCardLike}
+                    onCardDelete={handleCardDelete}
+                    onLogout={handleLogout}
+                  />
+                ) : (
+                  <Navigate to="/signin" /> // Redirigir a login si no está autenticado
+                )
+              }
+            />
+          </Routes>
+
+          {/* Popups */}
           <EditProfilePopup
             isOpen={isEditProfileOpen}
             onClose={closeAllPopups}
@@ -148,8 +197,6 @@ function App() {
             onAddPlace={handleAddPlace}
           />
 
-          <Footer />
-
           <ImagePopup
             card={selectedCard}
             isOpen={isImagePopupOpen}
@@ -157,6 +204,7 @@ function App() {
           />
         </CurrentUserContext.Provider>
       </div>
+      <Footer />
     </div>
   );
 }
