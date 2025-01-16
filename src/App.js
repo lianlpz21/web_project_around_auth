@@ -9,14 +9,12 @@ import api from "./utils/api";
 import CurrentUserContext from "./contexts/CurrentUserContext";
 import EditAvatarPopup from "./components/EditAvatarPopup";
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
+import * as auth from "./utils/auth";
+import InfoToolTip from "./components/InfoToolTip";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado para autenticación
@@ -28,11 +26,80 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [cards, setCards] = useState([]);
 
+  /*LOGIN-REGISTER-LOGOUT*/
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const [infoTooltip, setInfoTooltip] = useState({
+    isOpen: false,
+    success: false,
+  });
+
+  const navigate = useNavigate();
+
+  // Comprobar token y autenticar al usuario al cargar la app
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      auth
+        .checkToken(token)
+        .then((res) => {
+          console.log("Token verificado:", res); // Verifica la respuesta aquí
+          setLoggedIn(true);
+          setUserEmail(res.data.email);
+          navigate("/");
+        })
+        .catch((err) => {
+          console.error("Error en el token:", err);
+          setInfoTooltip({ isOpen: true, success: false });
+        });
+    }
+  }, [navigate]);
+
+  // Manejar registro
+  function handleSignup(email, password) {
+    auth
+      .signup(email, password)
+      .then(() => {
+        setInfoTooltip({ isOpen: true, success: true });
+        navigate("/signin");
+      })
+      .catch(() => {
+        setInfoTooltip({ isOpen: true, success: false });
+      });
+  }
+
+  // Manejar inicio de sesión
+  function handleLogin(email, password) {
+    auth
+      .signin(email, password)
+      .then((res) => {
+        console.log("Respuesta del login:", res); // Verifica la respuesta aquí
+        localStorage.setItem("jwt", res.token);
+        setLoggedIn(true);
+        setUserEmail(email);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error("Error en el login:", err);
+        setInfoTooltip({ isOpen: true, success: false });
+      });
+  }
+
+  // Cerrar sesión
+  function handleLogout() {
+    setLoggedIn(false);
+    localStorage.removeItem("jwt");
+    navigate("/signin");
+  }
+
+  /*--------------------------------*/
+
   useEffect(() => {
     if (isAuthenticated) {
       async function fetchUserInfo() {
         try {
           const userInfo = await api.getUserInfo();
+          console.log("Usuario autenticado:", userInfo); // Verifica la respuesta de la API
           setCurrentUser(userInfo);
         } catch (error) {
           console.log("Error al obtener la información del usuario", error);
@@ -47,6 +114,7 @@ function App() {
       async function fetchCards() {
         try {
           const cardList = await api.getInitialCards();
+          console.log("Tarjetas obtenidas:", cardList); // Verifica la respuesta de la API
           setCards(cardList);
         } catch (error) {
           console.log("Error al obtener las tarjetas", error);
@@ -148,13 +216,13 @@ function App() {
         <CurrentUserContext.Provider value={currentUser}>
           <Routes>
             {/* Ruta para el login */}
-            <Route
-              path="/signin"
-              element={<Login onLoginSuccess={handleLoginSuccess} />}
-            />
+            <Route path="/signin" element={<Login onLogin={handleLogin} />} />
 
             {/* Ruta para el registro */}
-            <Route path="/signup" element={<Signup />} />
+            <Route
+              path="/signup"
+              element={<Signup onSignup={handleSignup} />}
+            />
 
             {/* Ruta principal protegida */}
             <Route
@@ -198,13 +266,22 @@ function App() {
           />
 
           <ImagePopup
-            card={selectedCard}
             isOpen={isImagePopupOpen}
             onClose={closeAllPopups}
+            card={selectedCard}
           />
         </CurrentUserContext.Provider>
+
+        {/* Footer */}
+        <Footer />
+
+        {/* Info Tooltip */}
+        <InfoToolTip
+          isOpen={infoTooltip.isOpen}
+          success={infoTooltip.success}
+          onClose={() => setInfoTooltip({ isOpen: false })}
+        />
       </div>
-      <Footer />
     </div>
   );
 }
