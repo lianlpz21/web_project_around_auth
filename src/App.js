@@ -94,13 +94,6 @@ function App() {
       });
   }
 
-  // Cerrar sesión
-  function handleLogout() {
-    setLoggedIn(false);
-    localStorage.removeItem("jwt");
-    navigate("/signin");
-  }
-
   /*--------------------------------*/
 
   useEffect(() => {
@@ -137,10 +130,12 @@ function App() {
     setIsAuthenticated(true);
   }
 
+  // Manejar cierre de sesión
   function handleLogout() {
     setIsAuthenticated(false);
-    setCurrentUser(null);
-    setCards([]);
+    setUserEmail("");
+    localStorage.removeItem("jwt");
+    navigate("/signin");
   }
 
   // Manejo de popups y cambios en el perfil y avatar
@@ -221,7 +216,11 @@ function App() {
   return (
     <div className="App body">
       <div className="page">
-        <Header />
+        <Header
+          userEmail={userEmail}
+          onLogout={handleLogout}
+          isAuthenticated={isAuthenticated}
+        />
         <CurrentUserContext.Provider value={currentUser}>
           <Routes>
             <Route path="/signin" element={<Login onLogin={handleLogin} />} />
