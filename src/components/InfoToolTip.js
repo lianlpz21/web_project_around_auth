@@ -3,9 +3,9 @@ import React from "react";
 function InfoTooltip({ isOpen, success, onClose }) {
   return (
     isOpen && (
-      <div className="tooltip">
+      <section className="tooltip">
         <div className="tooltip__content">
-          <p>
+          <p className="tooltip__paragraph">
             {success
               ? "¡Registro exitoso!"
               : "Algo salió mal, inténtalo de nuevo."}
@@ -14,7 +14,7 @@ function InfoTooltip({ isOpen, success, onClose }) {
             Cerrar
           </button>
         </div>
-      </div>
+      </section>
     )
   );
 }

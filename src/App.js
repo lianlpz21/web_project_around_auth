@@ -43,17 +43,25 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          console.log("Token verificado:", res); // Verifica la respuesta aquí
+          console.log("Token verificado:", res);
           setLoggedIn(true);
           setUserEmail(res.data.email);
-          navigate("/");
+          setIsAuthenticated(true);
+          // navigate("/");
         })
         .catch((err) => {
           console.error("Error en el token:", err);
           setInfoTooltip({ isOpen: true, success: false });
         });
     }
-  }, [navigate]);
+  }, []);
+
+  // Redirigir automáticamente cuando el usuario esté autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/"); // Redirigir al homePage si está autenticado
+    }
+  }, [isAuthenticated, navigate]);
 
   // Manejar registro
   function handleSignup(email, password) {
@@ -74,14 +82,15 @@ function App() {
       .signin(email, password)
       .then((res) => {
         console.log("Respuesta del login:", res); // Verifica la respuesta aquí
-        localStorage.setItem("jwt", res.token);
-        setLoggedIn(true);
-        setUserEmail(email);
-        navigate("/");
+        localStorage.setItem("jwt", res.token); // Guardar el token en localStorage
+        setLoggedIn(true); // Cambiar el estado de autenticación
+        setUserEmail(email); // Guardar el email del usuario
+        setIsAuthenticated(true);
+        // navigate("/", { replace: true }); // Redirigir a la página principal
       })
       .catch((err) => {
         console.error("Error en el login:", err);
-        setInfoTooltip({ isOpen: true, success: false });
+        setInfoTooltip({ isOpen: true, success: false }); // Mostrar mensaje de error si el login falla
       });
   }
 
@@ -99,7 +108,7 @@ function App() {
       async function fetchUserInfo() {
         try {
           const userInfo = await api.getUserInfo();
-          console.log("Usuario autenticado:", userInfo); // Verifica la respuesta de la API
+          console.log("Usuario autenticado:", userInfo);
           setCurrentUser(userInfo);
         } catch (error) {
           console.log("Error al obtener la información del usuario", error);
@@ -114,7 +123,7 @@ function App() {
       async function fetchCards() {
         try {
           const cardList = await api.getInitialCards();
-          console.log("Tarjetas obtenidas:", cardList); // Verifica la respuesta de la API
+          console.log("Tarjetas obtenidas:", cardList);
           setCards(cardList);
         } catch (error) {
           console.log("Error al obtener las tarjetas", error);
@@ -215,16 +224,13 @@ function App() {
         <Header />
         <CurrentUserContext.Provider value={currentUser}>
           <Routes>
-            {/* Ruta para el login */}
             <Route path="/signin" element={<Login onLogin={handleLogin} />} />
 
-            {/* Ruta para el registro */}
             <Route
               path="/signup"
               element={<Signup onSignup={handleSignup} />}
             />
 
-            {/* Ruta principal protegida */}
             <Route
               path="/"
               element={
@@ -246,7 +252,6 @@ function App() {
             />
           </Routes>
 
-          {/* Popups */}
           <EditProfilePopup
             isOpen={isEditProfileOpen}
             onClose={closeAllPopups}
@@ -272,10 +277,8 @@ function App() {
           />
         </CurrentUserContext.Provider>
 
-        {/* Footer */}
         <Footer />
 
-        {/* Info Tooltip */}
         <InfoToolTip
           isOpen={infoTooltip.isOpen}
           success={infoTooltip.success}

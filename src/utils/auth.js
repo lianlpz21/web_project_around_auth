@@ -1,28 +1,69 @@
 const BASE_URL = "https://se-register-api.en.tripleten-services.com/v1";
 
+// Guardar el token en localStorage
+const saveToken = (token) => {
+  localStorage.setItem("jwt", token);
+};
+
+// Obtener el token desde localStorage
+const getToken = () => {
+  return localStorage.getItem("jwt");
+};
+
+// Eliminar el token de localStorage (en caso de cerrar sesión)
+export const removeToken = () => {
+  localStorage.removeItem("jwt");
+};
+
+// Función para registrar un usuario
 export const signup = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
-  }).then((res) => {
-    if (!res.ok) throw new Error("Error al registrarse");
-    return res.json();
-  });
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Error al registrarse");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      if (data.token) {
+        saveToken(data.token); // Guardar el token en localStorage
+      }
+      return data;
+    });
 };
 
+// Función para iniciar sesión
 export const signin = (email, password) => {
   return fetch(`${BASE_URL}/signin`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
-  }).then((res) => {
-    if (!res.ok) throw new Error("Error al iniciar sesión");
-    return res.json();
-  });
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Error al iniciar sesión");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      if (data.token) {
+        saveToken(data.token); // Guardar el token en localStorage
+      }
+      return data;
+    });
 };
 
-export const checkToken = (token) => {
+// Verificar el token actual
+export const checkToken = () => {
+  const token = getToken(); // Obtener el token desde localStorage
+  if (!token) {
+    throw new Error("No hay token disponible");
+  }
+
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
@@ -30,7 +71,9 @@ export const checkToken = (token) => {
       Authorization: `Bearer ${token}`,
     },
   }).then((res) => {
-    if (!res.ok) throw new Error("Token inválido");
+    if (!res.ok) {
+      throw new Error("Token inválido");
+    }
     return res.json();
   });
 };
