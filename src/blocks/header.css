@@ -1,5 +1,15 @@
 .header {
+  display: flex;
+  flex-direction: column;
   padding-top: 45px;
+  width: 100%;
+}
+
+.header__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .header__logo {
@@ -7,9 +17,24 @@
   max-height: 33px;
 }
 
+.header__user-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 23px;
+}
+
 .header__line {
   border-bottom: 1px solid #545454;
-  display: block;
   width: 100%;
-  margin-top: 41px;
+  margin-top: 20px;
+}
+
+.header__logout-btn {
+  color: #a9a9a9;
+  background-color: none;
+  background: none;
+  border: none;
+  outline-color: none;
+  cursor: pointer;
 }
