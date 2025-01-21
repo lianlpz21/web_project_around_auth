@@ -1,0 +1,35 @@
+.auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+}
+
+.auth__title {
+  padding-bottom: 50px;
+}
+.auth__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth__input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #ccc;
+}
+
+.auth__input:nth-child(2) {
+  margin: 30px 0 216px 0;
+}
+
+.auth__button {
+  background-color: #fff;
+  padding: 14px 84px;
+  cursor: pointer;
+}
+
+.auth__link {
+  color: #fff;
+  text-decoration: none;
+}

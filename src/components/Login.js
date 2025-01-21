@@ -30,9 +30,15 @@ function Login({ onLogin }) {
           required
         />
         <button type="submit" className="auth__button">
-          Entrar
+          Inicia sesión
         </button>
       </form>
+      <p className="auth__register">
+        Aún no eres miembro?{" "}
+        <a href="/register" className="auth__link">
+          Regístrate aquí
+        </a>
+      </p>
     </div>
   );
 }
