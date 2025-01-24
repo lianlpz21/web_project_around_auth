@@ -36,7 +36,7 @@ function App() {
 
   const navigate = useNavigate();
 
-  // Comprobar token y autenticar al usuario al cargar la app
+  // Comprobar token y autenticar al usuario al cargar
   useEffect(() => {
     const token = localStorage.getItem("jwt");
     if (token) {
@@ -47,7 +47,6 @@ function App() {
           setLoggedIn(true);
           setUserEmail(res.data.email);
           setIsAuthenticated(true);
-          // navigate("/");
         })
         .catch((err) => {
           console.error("Error en el token:", err);
@@ -59,7 +58,7 @@ function App() {
   // Redirigir automáticamente cuando el usuario esté autenticado
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/"); // Redirigir al homePage si está autenticado
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
@@ -67,12 +66,26 @@ function App() {
   function handleSignup(email, password) {
     auth
       .signup(email, password)
-      .then(() => {
-        setInfoTooltip({ isOpen: true, success: true });
-        navigate("/signin");
+      .then((data) => {
+        setInfoTooltip({
+          isOpen: true,
+          success: true,
+          message: "¡Correcto! Ya estás registrado",
+        });
+
+        setTimeout(() => {
+          navigate("/signin");
+          setInfoTooltip({ isOpen: false });
+        }, 2000);
       })
-      .catch(() => {
-        setInfoTooltip({ isOpen: true, success: false });
+      .catch((err) => {
+        console.error("Error durante el registro:", err);
+        setInfoTooltip({
+          isOpen: true,
+          success: false,
+          message:
+            err.message || "Uy, algo salió mal. Por favor, inténtalo de nuevo.",
+        });
       });
   }
 
@@ -81,20 +94,16 @@ function App() {
     auth
       .signin(email, password)
       .then((res) => {
-        console.log("Respuesta del login:", res); // Verifica la respuesta aquí
-        localStorage.setItem("jwt", res.token); // Guardar el token en localStorage
-        setLoggedIn(true); // Cambiar el estado de autenticación
-        setUserEmail(email); // Guardar el email del usuario
+        localStorage.setItem("jwt", res.token);
+        setLoggedIn(true);
+        setUserEmail(email);
         setIsAuthenticated(true);
-        // navigate("/", { replace: true }); // Redirigir a la página principal
       })
       .catch((err) => {
         console.error("Error en el login:", err);
-        setInfoTooltip({ isOpen: true, success: false }); // Mostrar mensaje de error si el login falla
+        setInfoTooltip({ isOpen: true, success: false });
       });
   }
-
-  /*--------------------------------*/
 
   useEffect(() => {
     if (isAuthenticated) {

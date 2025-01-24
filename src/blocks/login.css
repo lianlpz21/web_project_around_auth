@@ -17,6 +17,7 @@
   background-color: transparent;
   border: none;
   border-bottom: 1px solid #ccc;
+  color: #fff;
 }
 
 .auth__input:nth-child(2) {

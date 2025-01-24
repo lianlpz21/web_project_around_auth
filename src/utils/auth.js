@@ -10,7 +10,7 @@ const getToken = () => {
   return localStorage.getItem("jwt");
 };
 
-// Eliminar el token de localStorage (en caso de cerrar sesión)
+// Eliminar el token de localStorage
 export const removeToken = () => {
   localStorage.removeItem("jwt");
 };
@@ -24,15 +24,21 @@ export const signup = (email, password) => {
   })
     .then((res) => {
       if (!res.ok) {
-        throw new Error("Error al registrarse");
+        return res.json().then((errorData) => {
+          throw new Error(errorData.message || "Error al registrarse");
+        });
       }
       return res.json();
     })
     .then((data) => {
       if (data.token) {
-        saveToken(data.token); // Guardar el token en localStorage
+        saveToken(data.token);
       }
       return data;
+    })
+    .catch((err) => {
+      console.error("Error en signup:", err);
+      throw err;
     });
 };
 
@@ -51,7 +57,7 @@ export const signin = (email, password) => {
     })
     .then((data) => {
       if (data.token) {
-        saveToken(data.token); // Guardar el token en localStorage
+        saveToken(data.token);
       }
       return data;
     });
@@ -59,7 +65,7 @@ export const signin = (email, password) => {
 
 // Verificar el token actual
 export const checkToken = () => {
-  const token = getToken(); // Obtener el token desde localStorage
+  const token = getToken();
   if (!token) {
     throw new Error("No hay token disponible");
   }
