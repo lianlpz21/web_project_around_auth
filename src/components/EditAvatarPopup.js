@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
 
 export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
-  const avatarRef = useRef(); // Usamos useRef para obtener el valor de la entrada
+  const avatarRef = useRef();
 
   useEffect(() => {
     // Limpiar el input cuando se abre el popup
@@ -14,7 +14,6 @@ export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    // Pasamos el valor de la entrada utilizando la ref
     onUpdateAvatar({
       avatar: avatarRef.current.value,
     });
@@ -34,7 +33,7 @@ export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
         placeholder="URL de la nueva imagen"
         className="popup__input popup__input_type_avatar"
         name="avatar"
-        ref={avatarRef} // Aquí usamos el ref para acceder al valor
+        ref={avatarRef}
         required
       />
       <span className="error-message" id="input__avatar-error"></span>

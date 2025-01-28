@@ -16,19 +16,19 @@ export default function PopupWithForm({
       onSubmit={onSubmit}
     >
       <div className="overlay"></div>
-      <div className="popup-content">
+      <div className="popup__content">
         <button
           onClick={onClose}
           type="button"
           className="popup__close-button popup__icon"
         ></button>
-        <fieldset className="popup__container">
+        <div className="popup__container">
           <h3 className="popup__title">{title}</h3>
           {children}
           <button type="submit" className="popup__btn">
             {buttonText}
           </button>
-        </fieldset>
+        </div>
       </div>
     </form>
   );

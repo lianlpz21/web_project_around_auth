@@ -43,13 +43,11 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          console.log("Token verificado:", res);
           setLoggedIn(true);
           setUserEmail(res.data.email);
           setIsAuthenticated(true);
         })
         .catch((err) => {
-          console.error("Error en el token:", err);
           setInfoTooltip({ isOpen: true, success: false });
         });
     }
@@ -110,11 +108,9 @@ function App() {
       async function fetchUserInfo() {
         try {
           const userInfo = await api.getUserInfo();
-          console.log("Usuario autenticado:", userInfo);
+
           setCurrentUser(userInfo);
-        } catch (error) {
-          console.log("Error al obtener la información del usuario", error);
-        }
+        } catch (error) {}
       }
       fetchUserInfo();
     }
@@ -125,19 +121,13 @@ function App() {
       async function fetchCards() {
         try {
           const cardList = await api.getInitialCards();
-          console.log("Tarjetas obtenidas:", cardList);
+
           setCards(cardList);
-        } catch (error) {
-          console.log("Error al obtener las tarjetas", error);
-        }
+        } catch (error) {}
       }
       fetchCards();
     }
   }, [isAuthenticated]);
-
-  function handleLoginSuccess() {
-    setIsAuthenticated(true);
-  }
 
   // Manejar cierre de sesión
   function handleLogout() {
@@ -174,27 +164,17 @@ function App() {
   }
 
   function handleUpdateUser(userData) {
-    api
-      .setUserInfo(userData)
-      .then((updatedUser) => {
-        setCurrentUser(updatedUser);
-        closeAllPopups();
-      })
-      .catch((error) => {
-        console.log("Error al actualizar el perfil", error);
-      });
+    api.setUserInfo(userData).then((updatedUser) => {
+      setCurrentUser(updatedUser);
+      closeAllPopups();
+    });
   }
 
   function handleUpdateAvatar({ avatar }) {
-    api
-      .setUserAvatar(avatar)
-      .then((updatedUser) => {
-        setCurrentUser(updatedUser);
-        closeAllPopups();
-      })
-      .catch((error) => {
-        console.log("Error al actualizar el avatar", error);
-      });
+    api.setUserAvatar(avatar).then((updatedUser) => {
+      setCurrentUser(updatedUser);
+      closeAllPopups();
+    });
   }
 
   function handleAddPlace(newCard) {
